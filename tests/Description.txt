@@ -1,0 +1,39 @@
+Step 1 — Basic Order Creation
+    Expected behavior:
+        HTTP 201 Created
+        JSON response containing:
+        order_id
+        status: "created"
+    Save the returned order_id for later steps.
+----------------------------------------------------------
+Step 2 — Retry with Same Idempotency Key
+    Expected behavior:
+        Same HTTP status code as Step 1
+        Same response body
+        Same order_id
+        No duplicate order created
+    This demonstrates idempotent behavior.
+----------------------------------------------------------
+Step 3 — Same Key, Different Payload (Conflict Case)
+    Expected behavior:
+        HTTP 409 Conflict
+        No new order created
+        No database modifications
+    This verifies request fingerprint validation.
+----------------------------------------------------------
+Step 4 — Simulated Failure After Commit
+    Expected behavior:
+        HTTP 500 or timeout
+        The order and ledger write must have already been committed
+----------------------------------------------------------
+Step 5 — Retry After Simulated Failure
+    Expected behavior:
+        HTTP 201 Created
+        Valid order_id
+        Only one order and one ledger entry exist
+----------------------------------------------------------
+Step 6 — Verify Order Exists
+    Expected behavior:
+        Order is retrievable
+        Only one order exists for that key
+----------------------------------------------------------
