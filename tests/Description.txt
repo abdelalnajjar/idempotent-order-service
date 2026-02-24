@@ -1,4 +1,14 @@
 Step 1 — Basic Order Creation
+    
+    
+
+curl -X POST http://localhost:3000/orders \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: test-123" \
+  -d '{"customer_id":"cust1","item_id":"item1","quantity":1}'
+
+    
+    
     Expected behavior:
         HTTP 201 Created
         JSON response containing:
@@ -7,6 +17,13 @@ Step 1 — Basic Order Creation
     Save the returned order_id for later steps.
 ----------------------------------------------------------
 Step 2 — Retry with Same Idempotency Key
+    
+    
+curl -X POST http://localhost:3000/orders \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: test-123" \
+  -d '{"customer_id":"cust1","item_id":"item1","quantity":1}'
+    
     Expected behavior:
         Same HTTP status code as Step 1
         Same response body
@@ -15,6 +32,13 @@ Step 2 — Retry with Same Idempotency Key
     This demonstrates idempotent behavior.
 ----------------------------------------------------------
 Step 3 — Same Key, Different Payload (Conflict Case)
+ 
+ 
+curl -X POST http://localhost:3000/orders \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: test-123" \
+  -d '{"customer_id":"cust1","item_id":"item1","quantity":5}'
+ 
     Expected behavior:
         HTTP 409 Conflict
         No new order created
@@ -22,17 +46,36 @@ Step 3 — Same Key, Different Payload (Conflict Case)
     This verifies request fingerprint validation.
 ----------------------------------------------------------
 Step 4 — Simulated Failure After Commit
+    
+    
+curl -X POST http://localhost:3000/orders \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: test-fail-1" \
+  -H "X-Debug-Fail-After-Commit: true" \
+  -d '{"customer_id":"cust2","item_id":"item2","quantity":1}'
+
     Expected behavior:
         HTTP 500 or timeout
         The order and ledger write must have already been committed
 ----------------------------------------------------------
 Step 5 — Retry After Simulated Failure
+    
+curl -X POST http://localhost:3000/orders \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: test-fail-1" \
+  -d '{"customer_id":"cust2","item_id":"item2","quantity":1}'
+
+
     Expected behavior:
         HTTP 201 Created
         Valid order_id
         Only one order and one ledger entry exist
 ----------------------------------------------------------
 Step 6 — Verify Order Exists
+
+curl http://localhost:3000/orders/1d9bd878-d906-4cb9-8d72-99bced798f25
+
+
     Expected behavior:
         Order is retrievable
         Only one order exists for that key
