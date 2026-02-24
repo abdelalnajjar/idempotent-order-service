@@ -67,7 +67,7 @@ db.run(`
 // --- TABLES CREATED ---
 
 app.get("/",(req,res)=>{
-    res.send("Homepage")
+    res.send("Homepage v2")
 })
 
 

@@ -1,3 +1,8 @@
+Name: Abdel Rahman Alnajjar
+Course: Cloud Computing (CS-218)
+Assignment 2 – Serverless Order API
+
+
 Serverless Order API
 Assignment 2 – Idempotency, Retries, and Eventual Consistency
 
@@ -17,6 +22,7 @@ Tech Stack
     Express
     SQLite
     UUID
+    Nginx
     Crypto (SHA-256 hashing)
     AWS EC2 (single instance deployment)
 
