@@ -41,7 +41,7 @@ Security Group Configuration
     Inbound Rules:
     | Type | Port | Source    |
     | ---- | ---- | --------- |
-    | SSH  | 22   | Your IP   |
+    | SSH  | 22   | My IP     |
     | HTTP | 80   | 0.0.0.0/0 |
 
 Port 3000 is not publicly exposed.
